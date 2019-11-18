@@ -1,0 +1,92 @@
+import { Matches, MaxLength, MinLength, IsNotEmpty, IsAlphanumeric, IsEmail, IsString, ValidateIf, IsInstance } from 'class-validator';
+
+
+export class User {
+	public id?: number;
+
+
+	@IsNotEmpty({ message: 'First name cannot be empty' })
+	@IsString({ message: 'First name must be string' })
+	@MinLength(4, { message: 'Username must be between 4 to 20 characters' })
+	@MaxLength(20, { message: 'Username must be between 4 to 20 characters' })
+	public first_name: string;
+
+	@ValidateIf(o => o)
+	@IsString({ message: 'Middle name must be string' })
+	@MinLength(4, { message: 'Middle name must be between 4 to 20 characters' })
+	@MaxLength(20, { message: 'Middle name must be between 4 to 20 characters' })
+	public middle_name: string;
+
+
+	@IsNotEmpty({ message: 'Last name cannot be empty' })
+	@IsString({ message: 'Last name must be string' })
+	@MinLength(4, { message: 'Last name must be between 4 to 20 characters' })
+	@MaxLength(20, { message: 'Last name must be between 4 to 20 characters' })
+	public last_name: string;
+
+	@IsNotEmpty({ message: 'Email cannot be empty' })
+	@IsEmail()
+	public email: string;
+
+	@IsNotEmpty({ message: 'Phone number ext cannot be empty' })
+	@IsInstance(Number, { message: 'Phone number ext must be a number' })
+	@MinLength(2, { message: 'Phone number ext must be between 2 to 3 characters' })
+	@MaxLength(3, { message: 'Phone number ext must be between 2 to 3 characters' })
+	public phone_number_ext: string;
+
+	@IsNotEmpty({ message: 'Phone number cannot be empty' })
+	@IsInstance(Number, { message: 'Phone number must be a number' })
+	@MinLength(2, { message: 'Phone number must be between 2 to 3 characters' })
+	@MaxLength(3, { message: 'Phone number must be between 2 to 3 characters' })
+	public phone_number: string;
+
+
+}
+
+
+const AuthRes = await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(Auth)
+      .values([
+        {
+          phone_ext: '999',
+          phone_number: '98123456789',
+          password: 'abcdef',
+          is_obsolete: true,
+        },
+      ])
+      .execute();
+    const id = AuthRes.identifiers[0].id;
+    console.log(id);
+
+    const UserRes = await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(Users)
+      .values([
+        {
+          auth_id: id,
+          first_name: 'rubin',
+          middle_name: 'asas',
+          last_name: 'bhandari',
+          email: 'abc@xyz',
+          address: 'kathmandu',
+          is_obsolete: true,
+        },
+      ])
+      .execute();
+
+    const CompanyRes = await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(CompanyUser)
+      .values([
+        {
+          auth_id: id,
+          company_idx: '812cfa66-2c55-4430-8a8f-16ed7a8fe403',
+          is_active: true,
+          is_obsolete: true,
+        },
+      ])
+      .execute();
